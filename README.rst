@@ -31,7 +31,13 @@ To use SpinMPI in your SpiNNaker application, include the header files in your C
 
 MPI is an open standard. Information on how to use the MPI primitives is widely available, for example on sites such as `MPI Tutorial <https://mpitutorial.com/>`__.
 
-In the host-side Python code, first create the MPI runtime and context with the number of rings of cores to be used and declare the application binary:
+In the host-side Python code, first import the MPI libraries:
+
+:: 
+
+	import spynnaker_mpi
+
+Create the MPI runtime and context with the number of rings of cores to be used and declare the application binary:
 
 ::
 
