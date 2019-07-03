@@ -43,8 +43,11 @@ In the host-side Python code, first create the MPI runtime and context with the 
 Initialize and run the app:
 
 ::
+
 	app.init(context)
 	app.run()
+
+
 
 authorship and copyright
 ------------------------
