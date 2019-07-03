@@ -52,7 +52,7 @@ Stop the application and retrieve the output print buffers:
 ::
 	buffers = app.stop(get_buffers=True)
 
-authorship and copyright
+Authorship and copyright
 ------------------------
 
 SpinMPI is being developed by `Francesco Barchi <mailto:francesco.barchi@polito.it>`__.
