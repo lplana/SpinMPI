@@ -18,7 +18,7 @@ See the file `LICENSE-AGPL3.rst <./LICENSE-AGPL3.rst>`__ or
 http://www.gnu.org/licenses/ for a full text of the license and the
 rights and obligations implied.
 
-Some of the contributions to Lambda are alternatively or additionally
+Some of the contributions to SpinMPI are alternatively or additionally
 ::
 
   Copyright (c) 2016-2019, Gianvito Urgese and Politecnico di Torino
