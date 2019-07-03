@@ -73,5 +73,4 @@ SpinMPI is being developed by `Francesco Barchi <mailto:francesco.barchi@polito.
 |    :width: 76px                                                                                                  |                                                                                                                    |
 +------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 
-
-
+*icons on this page by Austin Andrews / https://github.com/Templarian/WindowsIcons*
