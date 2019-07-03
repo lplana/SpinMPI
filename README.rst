@@ -55,6 +55,23 @@ Stop the application and retrieve the output print buffers:
 authorship and copyright
 ------------------------
 
+SpinMPI is being developed by `Francesco Barchi <mailto:francesco.barchi@polito.it>`__.
+
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+|  **Please always cite the publication, also if using SpinMPI in comparisons and pipelines**                                                                                                                                           |
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| .. image:: https://user-images.githubusercontent.com/7613428/60581998-40d00b00-9d88-11e9-9a24-efd28e1bcaca.png   | *An Efficient MPI Implementation for Multi-Core Neuromorphic Platforms*;                                           |
+|    :alt: Please cite                                                                                             | Francesco Barchi, Gianvito Urgese, Enrico Macii, Andrea Acquaviva;                                                 |
+|    :target: https://ieeexplore.ieee.org/document/8676216                                                         | `2017 New Generation of CAS (NGCAS) <https://ieeexplore.ieee.org/document/8052322>`__;                             |
+|    :width: 76px                                                                                                  | doi: 10.1109/NGCAS.2017.31                                                                                         |
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| **Please respect the license of the software**                                                                                                                                                                                        |
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+| .. image:: https://user-images.githubusercontent.com/7613428/60581999-4168a180-9d88-11e9-87e3-ce5e127b84a1.png   | SpinMPI is free and open source software, so you can use it for any purpose, free of charge.                       |
+|    :alt: Respect the license                                                                                     | However, certain conditions apply when you (re-)distribute and/or modify SpinMPI; please respect the               |
+|    :target: https://github.com/neuromorphic-polito/spinn_mpi/blob/master/LICENSE.rst                             | `license <https://github.com/neuromorphic-polito/spinn_mpi/blob/master/LICENSE.rst>`_                              |
+|    :width: 76px                                                                                                  |                                                                                                                    |
++------------------------------------------------------------------------------------------------------------------+--------------------------------------------------------------------------------------------------------------------+
 
 
 
