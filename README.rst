@@ -47,7 +47,10 @@ Initialize and run the app:
 	app.init(context)
 	app.run()
 
+Stop the application and retrieve the output print buffers:
 
+::
+	buffers = app.stop(get_buffers=True)
 
 authorship and copyright
 ------------------------
