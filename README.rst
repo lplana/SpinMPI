@@ -50,7 +50,9 @@ Initialize and run the app:
 Stop the application and retrieve the output print buffers:
 
 ::
+
 	buffers = app.stop(get_buffers=True)
+
 
 Authorship and copyright
 ------------------------
