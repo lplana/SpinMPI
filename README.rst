@@ -25,7 +25,8 @@ Usage instructions
 
 To use MPI in your SpiNNaker application, include the header files in your C file:
 
-:: C
+::
+
 	#include "mpi.h"
 
 authorship and copyright
