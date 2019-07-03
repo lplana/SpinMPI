@@ -23,11 +23,13 @@ Installation
 Usage instructions
 ------------------
 
-To use MPI in your SpiNNaker application, include the header files in your C file:
+To use SpinMPI in your SpiNNaker application, include the header files in your C file:
 
 ::
 
 	#include "mpi.h"
+
+MPI is an open standard. Information on how to use the MPI primitives is widely available online on sites such as `MPI Tutorial <https://mpitutorial.com/>`__.
 
 authorship and copyright
 ------------------------
