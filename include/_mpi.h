@@ -14,7 +14,7 @@
 // ==========================================================================
 // Autor: Francesco Barchi <francesco.barchi@polito.it>
 // ==========================================================================
-// SpinMPI.cpp: Main File for SpinMPI
+// _mpi.h: Private header File for SpinMPI
 // ==========================================================================
 
 #ifndef __SPINN_MPI_PRIVATE_H__

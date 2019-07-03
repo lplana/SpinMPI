@@ -14,7 +14,7 @@
 // ==========================================================================
 // Autor: Francesco Barchi <francesco.barchi@polito.it>
 // ==========================================================================
-// SpinMPI.cpp: Main File for SpinMPI
+// mpi_scatter.c: MPI Scatter implementation for SpinMPI
 // ==========================================================================
 
 #include "_mpi.h"

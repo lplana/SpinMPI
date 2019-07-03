@@ -14,7 +14,7 @@
 # ==========================================================================
 # Autor: Francesco Barchi <francesco.barchi@polito.it>
 # ==========================================================================
-# SpinMPI.cpp: Main File for SpinMPI
+# setup.py: Installation of Python libraries for SpinMPI
 # ==========================================================================
 
 # -*- coding: utf-8 -*-

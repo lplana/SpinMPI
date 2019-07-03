@@ -14,7 +14,7 @@
 // ==========================================================================
 // Autor: Francesco Barchi <francesco.barchi@polito.it>
 // ==========================================================================
-// SpinMPI.cpp: Main File for SpinMPI
+// mpi_bcast_mc.c: Broadcast-over-Multicast implementation for SpinMPI
 // ==========================================================================
 
 #include "_mpi.h"

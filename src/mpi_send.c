@@ -14,7 +14,7 @@
 // ==========================================================================
 // Autor: Francesco Barchi <francesco.barchi@polito.it>
 // ==========================================================================
-// SpinMPI.cpp: Main File for SpinMPI
+// mpi_send.c: MPI Send implementation for SpinMPI
 // ==========================================================================
 
 #include "_mpi.h"
