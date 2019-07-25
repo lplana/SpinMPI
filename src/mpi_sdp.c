@@ -1,37 +1,17 @@
-// ==========================================================================
-//                                  SpinMPI
-// ==========================================================================
-// This file is part of SpinMPI.
-//
-// SpinMPI is Free Software: you can redistribute it and/or modify it
-// under the terms found in the LICENSE[.md|.rst] file distributed
-// together with this file.
-//
-// SpinMPI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-//
-// ==========================================================================
-// Autor: Francesco Barchi <francesco.barchi@polito.it>
-// ==========================================================================
-// mpi_sdp.c: SDP composition for SpinMPI
-// ==========================================================================
-
 #include "_mpi.h"
 
 /**
- *
+ * @brief TODO
  * @return
  */
 bool send_stop_to_host() {
+  // TODO: Implementing as User Command in ACP
   sdp_msg_t *msg = sark_msg_get();
 
   if (msg == NULL) {
     debug_printf("[MPI-SDP] Error in get SDP buffer");
     return false;
   }
-
-  msg->length = 20;
 
   // --- SDP Header ---
   msg->flags = 0x07;
@@ -40,12 +20,11 @@ bool send_stop_to_host() {
   msg->dest_addr = sv->dbg_addr;
   msg->srce_port = spin1_get_core_id();
   msg->srce_addr = spin1_get_chip_id();
+  msg->length = 16;
 
   // --- SCP/ACP Header ---
-  msg->cmd_rc = 0xFF;
+  msg->cmd_rc = MPI_ACP_STOP; // 0xFF;
   msg->seq = 0;
-
-  //cmd_variable_read(code, data, &length);
   msg->arg1 = 0;
   msg->arg2 = 0;
   msg->arg3 = 0;

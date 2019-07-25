@@ -1,22 +1,3 @@
-# ==========================================================================
-#                                  SpinMPI
-# ==========================================================================
-# This file is part of SpinMPI.
-#
-# SpinMPI is Free Software: you can redistribute it and/or modify it
-# under the terms found in the LICENSE[.md|.rst] file distributed
-# together with this file.
-#
-# SpinMPI is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
-# ==========================================================================
-# Autor: Francesco Barchi <francesco.barchi@polito.it>
-# ==========================================================================
-# _processor.py: Processor type for SpinMPI
-# ==========================================================================
-
 import math
 import ctypes
 import io
@@ -33,7 +14,7 @@ class ACPStructProcessorType(ACPAbstractType):
         self._val.rank = r
 
     def __len__(self):
-        return int(math.ceil(ctypes.sizeof(self._val)/4.0))
+        return int(ctypes.sizeof(self._val))
 
     def _factory(self):
         class Cls(ctypes.LittleEndianStructure):
@@ -56,10 +37,14 @@ class ACPStructProcessorType(ACPAbstractType):
 
     @property
     def bytecode(self):
-        # print("[ACPStructProcessorType] size: %d" % (ctypes.sizeof(self._val)))
         bytes_stream = io.BytesIO()
         bytes_stream.write(self._val)
         bytes_stream.flush()
         bytes_stream.seek(0)
 
         return bytes_stream.read()
+
+    def process_message(self, message):
+        print("[MPI-TYPE-PROCESSOR] Process message")
+        
+        pass

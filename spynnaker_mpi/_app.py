@@ -1,40 +1,14 @@
-# ==========================================================================
-#                                  SpinMPI
-# ==========================================================================
-# This file is part of SpinMPI.
-#
-# SpinMPI is Free Software: you can redistribute it and/or modify it
-# under the terms found in the LICENSE[.md|.rst] file distributed
-# together with this file.
-#
-# SpinMPI is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-#
-# ==========================================================================
-# Autor: Francesco Barchi <francesco.barchi@polito.it>
-# ==========================================================================
-# _app.py: Application class for SpinMPI
-# ==========================================================================
-
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import os
 import time
 
-import spinnman.model.cpu_info
-import spinnman.model.cpu_state
-import spinnman.messages.scp.scp_signal
-import spinn_storage_handlers.file_data_reader
-
-import spynnaker_acp
-
-from ._utils import Utils
+from spynnaker_acp import Utils
+from spynnaker_acp.spinnaker_interface \
+    import CPUState, SCPSignal, FileDataReader
 
 
-class App(object):
-    MAX_ATTEMPTS = 10
-
+class MPIApp(object):
     DELAY_100ms = 100 * Utils.si['m']
     DELAY_500ms = 500 * Utils.si['m']
 
@@ -45,16 +19,14 @@ class App(object):
 
     def __init__(self, runtime, app_aplx, app_id=30):
         self._runtime = runtime
-        self._app_aplx = str(app_aplx)
-        self._app_id = str(app_id)
+        self._app_aplx = app_aplx
+        self._app_id = app_id
 
         self._app_size = os.stat(self._app_aplx).st_size
-        self._app_executable = \
-            spinn_storage_handlers.file_data_reader.FileDataReader(self._app_aplx)
+        self._app_executable = FileDataReader(self._app_aplx)
 
         self._context = None
-        self._acp = None
-        self._status = App.STATUS_NONE
+        self._status = self.STATUS_NONE
         return
 
     def __str__(self):
@@ -72,7 +44,7 @@ class App(object):
         self._context = context
 
         # Phase 1: Load APLX
-        print("SPINN_MPI_APP: Loading %s instance" % (self.app_aplx,))
+        print("[MPI_APP]: Init (1) Loading %s instance" % (self.app_aplx,))
         self._runtime.transceiver.execute_flood(
             self.context.cores_subsets,
             self.app_executable,
@@ -80,20 +52,28 @@ class App(object):
             self.app_size)
         time.sleep(self.DELAY_500ms)
 
-        self._sync(state=spinnman.model.cpu_state.CPUState.SYNC0,
-                   signal=spinnman.messages.scp.scp_signal.SCPSignal.SYNC0)
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            state=CPUState.SYNC0,
+            signal=SCPSignal.SYNC0)
 
         # Phase 2a: Enable ACP Runtime
-        self._acp = spynnaker_acp.ACPRuntime(self._runtime.transceiver,
-                                             connection=self._runtime.scamp_connection)
-        self._acp.add_reaction(0xF4, 0, lambda: print("READ-REPLY received on Var 0"))
-        self._acp.add_reaction(0xFF, 0, self._acp.signal)
-        self._acp.start()
+        print("[MPI_APP]: Init (2) ACP Configuration")
 
-        # Phase 2b: Send Context
+        print("[MPI_APP]: Init (2a) Runtime Enabling")
+        self._runtime.enable()
+        self._runtime.add_reaction(0x0100, 0, lambda msg: self._runtime.signal())
+        
+        # Phase 2b: Start ACP Runtime
+        print("[MPI_APP]: Init (2b) Runtime Starting")
+        self._runtime.start()
+
+        # Phase 2c: Send MPI Context
+        print("[MPI_APP]: Init (2c) Runtime Initializing")
         self._context.send_rank()
 
-        print("SPINN_MPI_APP: Initialized")
+        print("[MPI_APP]: Init DONE")
         self._status = self.STATUS_ASSIGNED
         return
 
@@ -102,10 +82,22 @@ class App(object):
             return
 
         # Phase 3: Application run
-        self._sync(state=spinnman.model.cpu_state.CPUState.SYNC1,
-                   signal=spinnman.messages.scp.scp_signal.SCPSignal.SYNC1)
+        print("[MPI_APP]: Run (3) Check SYNC1 ")
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            state=CPUState.SYNC1,
+            signal=SCPSignal.SYNC1)
+        time.sleep(self.DELAY_500ms)
 
-        print("SPINN_MPI_APP: Launched")
+        print("[MPI_APP]: Run (3) Send SYNC1 ")
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            signal=SCPSignal.SYNC1)
+        time.sleep(self.DELAY_500ms)
+
+        print("[MPI_APP]: Run (3) DONE")
         self._status = self.STATUS_LAUNCHED
         return
 
@@ -113,65 +105,68 @@ class App(object):
         buffers = list()
 
         if self.status != self.STATUS_LAUNCHED:
-            print("SPINN_MPI_APP: Impossible to stop!")
+            print("[MPI_APP]: Impossible to stop!")
             return buffers
 
-        self._acp.wait()
+        print("[MPI_APP]: Stop (4) Wait ...")
+        self._runtime.wait()
 
-        # Wait SYNC0 -> ... -> Signal SYNC0
-        self._sync(state=spinnman.model.cpu_state.CPUState.SYNC0)
-        # Get data and others stuff
+        print("[MPI_APP]: Stop (4) Check SYNC0...")
+        # Wait SYNC0 -> ... 
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            state=CPUState.SYNC0)
+        time.sleep(self.DELAY_500ms)
+        
+        # TODO: Call a user defined get_data
         pass
-        time.sleep(self.DELAY_100ms)
-        self._sync(signal=spinnman.messages.scp.scp_signal.SCPSignal.SYNC0)
+
+        print("[MPI_APP]: Stop (4) Send SYNC0...")
+        # Send ... -> Signal SYNC0
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            signal=SCPSignal.SYNC0)
         time.sleep(self.DELAY_500ms)
 
+        print("[MPI_APP]: Stop (4) Check FINISHED...")
         # Wait FINISHED -> ... -> Signal STOP
-        self._sync(state=spinnman.model.cpu_state.CPUState.FINISHED)
-        # Get data and others stuff
-        if get_buffers:
-            print("SPINN_MPI_APP: Getting %s buffers" % (self.app_aplx,))
-            buffers = self._context.get_buffers()
-        time.sleep(self.DELAY_100ms)
-        self._sync(signal=spinnman.messages.scp.scp_signal.SCPSignal.STOP)
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            state=CPUState.FINISHED)
         time.sleep(self.DELAY_500ms)
 
-        # Wait IDLE
-        self._sync(state=spinnman.model.cpu_state.CPUState.IDLE)
-
-        # Stop ACP runtime
-        self._acp.stop()
-
-        self._status = self.STATUS_STOPPED
-        return buffers
-
-    def _sync(self, state=None, signal=None):
-        # State wait
-        if state is not None:
-            if self._check_state(state):
-                print("SPINN_MPI_APP: All instance are in correct state!")
-            else:
-                print("SPINN_MPI_APP: [!] Not all instance are in correct state!")
-
-        # Send signal
-        if signal is not None:
-            self._runtime.transceiver.send_signal(self.app_id, signal)
-
-    def _check_state(self, state):
-        attempts = 0
-        count = self._context.get_state_count(state)
-
-        while count != self.context.cores_number and attempts < self.MAX_ATTEMPTS:
-            attempts += 1
-            if attempts > self.MAX_ATTEMPTS/2:
-                print("\t...Attempt %d" % (attempts,))
-            count = self._context.get_state_count(state)
+        print("[MPI_APP]: Stop (4) Get IOBUF...")
+        # Get data
+        if get_buffers:
+            print("[MPI_APP]: Getting %s buffers" % (self.app_aplx,))
+            buffers = self._context.get_buffers()
             time.sleep(self.DELAY_500ms)
 
-        if count == self.context.cores_number:
-            return True
-        else:
-            return False
+        print("[MPI_APP]: Stop (4) Send STOP...")
+        #... -> Signal STOP
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            signal=SCPSignal.STOP)
+        time.sleep(self.DELAY_500ms)
+
+        print("[MPI_APP]: Stop (4) Check IDLE...")
+        # Wait IDLE
+        self._runtime.board_sync(
+            self.app_id,
+            self._context,
+            state=CPUState.IDLE)
+
+        print("[MPI_APP]: Stop (4) stopping runtime...")
+        # Stop ACP runtime
+        self._runtime.stop()
+
+        print("[MPI_APP]: Stop (4) DONE")
+        self._status = self.STATUS_STOPPED
+        return buffers
 
     @property
     def runtime(self):
@@ -199,4 +194,4 @@ class App(object):
 
     @property
     def app_id(self):
-        return int(self._app_id)
+        return self._app_id

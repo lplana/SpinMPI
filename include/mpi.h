@@ -1,21 +1,10 @@
-// ==========================================================================
-//                                  SpinMPI
-// ==========================================================================
-// This file is part of SpinMPI.
-//
-// SpinMPI is Free Software: you can redistribute it and/or modify it
-// under the terms found in the LICENSE[.md|.rst] file distributed
-// together with this file.
-//
-// SpinMPI is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-//
-// ==========================================================================
-// Autor: Francesco Barchi <francesco.barchi@polito.it>
-// ==========================================================================
-// mpi.h: Main Header File for SpinMPI
-// ==========================================================================
+/**
+ * @file mpi.h
+ * @author Barchi Francesco
+ * @date 2017-2018
+ * @brief The Message Passing Interface for SpiNNaker
+ *
+ */
 
 #ifndef __SPINN_MPI_H__
 #define __SPINN_MPI_H__
@@ -23,6 +12,8 @@
 #include "spin2_api.h"
 
 //#define MPI_DEBUG
+#define MPI_VERSION "19w19"
+
 #define MPI_COMM_WORLD 0
 #define MPI_STATUS_NULL 0
 #define MPI_STATUS_IGNORE NULL
@@ -32,29 +23,29 @@
 
 typedef enum {
   // 1 Byte
-      MPI_BYTE,
+  MPI_BYTE,
   MPI_CHARACTER,
   MPI_LOGICAL,
   MPI_INT8_T,
   MPI_UINT8_T,
 
   // 2 Byte
-      MPI_INT16_T,
+  MPI_INT16_T,
   MPI_UINT16_T,
 
   // 4 Byte
-      MPI_INTEGER,
+  MPI_INTEGER,
   MPI_REAL,
   MPI_INT32_T,
   MPI_UINT32_T,
 
   // 8 Byte
-      MPI_DOUBLE_PRECISION,
+  MPI_DOUBLE_PRECISION,
   MPI_INT64_T,
   MPI_UINT64_T,
 
   // Variable Byte
-      MPI_COMPLEX,
+  MPI_COMPLEX,
   MPI_PACKED
 
 } MPI_Datatype;
@@ -63,12 +54,14 @@ typedef unsigned int MPI_Comm;
 typedef unsigned int MPI_Status;
 typedef event_proc MPI_Main;
 
+
 /**
  * MPI SPINN
  *
  * @param handler
  */
 int MPI_Spinn(MPI_Main handler);
+
 
 /**
  * MPI INIT
@@ -79,12 +72,14 @@ int MPI_Spinn(MPI_Main handler);
  */
 int MPI_Init(int *argc, char ***argv);
 
+
 /**
  * MPI FINALIZE
  *
  * @return
  */
 int MPI_Finalize();
+
 
 /**
  * MPI GET PROCESSOR NAME
@@ -95,6 +90,7 @@ int MPI_Finalize();
  */
 int MPI_Get_processor_name(char *name, int *resultlen);
 
+
 /**
  * MPI COMM RANK
  *
@@ -103,6 +99,7 @@ int MPI_Get_processor_name(char *name, int *resultlen);
  */
 int MPI_Comm_rank(MPI_Comm comm, int *rank);
 
+
 /**
  * MPI COMM SIZE
  *
@@ -110,6 +107,7 @@ int MPI_Comm_rank(MPI_Comm comm, int *rank);
  * @param rank The communicator size
  */
 int MPI_Comm_size(MPI_Comm comm, int *size);
+
 
 /**
  * MPI SEND
@@ -128,6 +126,7 @@ int MPI_Send(const void *buf,
              int dest,
              int tag,
              MPI_Comm comm);
+
 
 /**
  * MPI RECV [Blocking]
@@ -148,6 +147,7 @@ int MPI_Recv(void *buf,
              MPI_Comm comm,
              MPI_Status *status);
 
+
 /**
  *
  * @param buffer
@@ -158,6 +158,7 @@ int MPI_Recv(void *buf,
  * @return
  */
 int MPI_Bcast(void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
+
 
 /**
  *
@@ -175,6 +176,7 @@ int MPI_Scatter(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                 void *recvbuf, int recvcount, MPI_Datatype recvtype,
                 int root, MPI_Comm comm);
 
+
 /**
  *
  * @param sendbuf
@@ -191,6 +193,7 @@ int MPI_Gather(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                void *recvbuf, int recvcount, MPI_Datatype recvtype,
                int root, MPI_Comm comm);
 
+
 /**
  *
  * @param sendbuf
@@ -205,5 +208,12 @@ int MPI_Gather(void *sendbuf, int sendcount, MPI_Datatype sendtype,
 int MPI_Allgather(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                   void *recvbuf, int recvcount, MPI_Datatype recvtype,
                   MPI_Comm comm);
+
+
+/**
+ * MPI BARRIER [Blocking]
+ *
+ */
+int MPI_Barrier(MPI_Comm comm);
 
 #endif //__SPINN_MPI_H__
